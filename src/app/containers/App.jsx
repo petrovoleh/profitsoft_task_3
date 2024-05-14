@@ -72,6 +72,18 @@ function App() {
                 {!isFetchingUser && (
                   <Routes>
                     <Route
+                        element={<OrderListView />}
+                        path={`${pageURLs[pages.orderListView]}`}
+                    />
+                    <Route
+                        element={<OrderEditor />}
+                        path={`${pageURLs[pages.prderEditor]}/:mode/:id`}
+                    />
+                    <Route
+                        element={<OrderEditor />}
+                        path={`${pageURLs[pages.orderEditor]}/:mode`}
+                    />
+                    <Route
                       element={<DefaultPage />}
                       path={`${pageURLs[pages.defaultPage]}`}
                     />

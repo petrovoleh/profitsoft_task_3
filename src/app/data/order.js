@@ -1,5 +1,4 @@
-const orders = [
-    // Orders for John Doe
+
 const orders = [
     // Orders for John Doe
     { id: 1, clientId: 1, product: "Laptop", quantity: 1, total: 1200 },
