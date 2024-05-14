@@ -34,7 +34,7 @@ export default function OrderListView() {
     const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_PAGE_SIZE);
     const [filter, setFilter] = React.useState({});
     const [data, setData] = React.useState(getAllOrders(filter));
-    const [isHovered, setIsHovered] =  React.useState(false);
+    const [isHovered, setIsHovered] =  React.useState(-1);
 
     const navigate = useNavigate();
 
@@ -156,8 +156,8 @@ export default function OrderListView() {
                                         role="checkbox"
                                         tabIndex={-1}
                                         onClick={() => orderSelectionHandler(order)}
-                                        onMouseEnter={() => setIsHovered(true)}
-                                        onMouseLeave={() => setIsHovered(false)}
+                                        onMouseEnter={() => setIsHovered(order.id)}
+                                        onMouseLeave={() => setIsHovered(-1)}
                                     >
                                         <TableCell align="center">{order.id}</TableCell>
                                         <TableCell align="center">{getClientById(order.clientId).name}</TableCell>
@@ -165,7 +165,7 @@ export default function OrderListView() {
                                         <TableCell align="center">{order.status}</TableCell>
                                         <TableCell align="center">{order.total}</TableCell>
                                         <TableCell align="center">
-                                            {isHovered && (
+                                            {isHovered===order.id && (
                                                 <DeleteButton order={order} />
                                             )}
                                         </TableCell>
