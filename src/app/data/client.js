@@ -105,6 +105,6 @@ export function getAllClients() {
     return [...clients];
 }
 
-export function getClientByName(name) {
-    return clients.find(client => client.name === name) || null;
+export function getClientById(id) {
+    return clients.find(client => client.id === id) || null;
 }
