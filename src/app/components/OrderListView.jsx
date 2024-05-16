@@ -16,31 +16,34 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import { Container, Grid, TextField, Fab, InputLabel, Select, MenuItem } from '@mui/material';
-import { getAllOrders } from 'app/data/order';
+import { getAllOrders, getOrderData } from 'app/data/order';
 import { useNavigate } from 'react-router-dom';
-import * as client from "../data/client";
-import {getClientById} from "../data/client";
+import { getClientById } from "../data/client";
 import DeleteButton from "./DeleteButton";
 
 const PAGE_PARAMETER = "PAGE";
 const ROWS_PER_PAGE_PARAMETER = "ROWS_PER_PAGE";
 const FILTER_PARAMETER = "FILTER";
-
 const FIRST_PAGE_NUMBER = 0;
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function OrderListView() {
-    const [page, setPage] = React.useState(FIRST_PAGE_NUMBER);
-    const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_PAGE_SIZE);
-    const [filter, setFilter] = React.useState({});
-    const [data, setData] = React.useState(getAllOrders(filter));
-    const [isHovered, setIsHovered] =  React.useState(-1);
+    const savedPage = JSON.parse(localStorage.getItem(PAGE_PARAMETER)) || FIRST_PAGE_NUMBER;
+    const savedRowsPerPage = JSON.parse(localStorage.getItem(ROWS_PER_PAGE_PARAMETER)) || DEFAULT_PAGE_SIZE;
+    const savedFilter = JSON.parse(localStorage.getItem(FILTER_PARAMETER)) || {};
+
+    const [page, setPage] = React.useState(savedPage);
+    const [rowsPerPage, setRowsPerPage] = React.useState(savedRowsPerPage);
+    const [filter, setFilter] = React.useState(savedFilter);
+    const [data, setData] = React.useState(getAllOrders(savedFilter));
+    const [isHovered, setIsHovered] = React.useState(-1);
+    const [binOrder, setBinOrder] = React.useState(null);
 
     const navigate = useNavigate();
 
-    const [orderStatus, setOrderStatus] = React.useState("");
-    const [orderDateStart, setOrderDateStart] = React.useState("");
-    const [orderDateEnd, setOrderDateEnd] = React.useState("");
+    const [orderStatus, setOrderStatus] = React.useState(savedFilter.status || "");
+    const [orderDateStart, setOrderDateStart] = React.useState(savedFilter.dateStart || "");
+    const [orderDateEnd, setOrderDateEnd] = React.useState(savedFilter.dateEnd || "");
 
     const orderSelectionHandler = (order) => {
         navigate(`/orders/${order.id}`);
@@ -48,21 +51,27 @@ export default function OrderListView() {
 
     const pageChangeHandler = (event, newPage) => {
         setPage(newPage);
+        localStorage.setItem(PAGE_PARAMETER, JSON.stringify(newPage));
     };
 
     const rowsPerPageChangeHandler = (event) => {
         const rowsPerPage = parseInt(event.target.value, 10);
         setRowsPerPage(rowsPerPage);
         setPage(FIRST_PAGE_NUMBER);
+        localStorage.setItem(ROWS_PER_PAGE_PARAMETER, JSON.stringify(rowsPerPage));
+        localStorage.setItem(PAGE_PARAMETER, JSON.stringify(FIRST_PAGE_NUMBER));
     };
 
     const clearFilterHandler = () => {
         setOrderStatus("");
         setOrderDateStart("");
         setOrderDateEnd("");
-        setFilter({});
-        setData(getAllOrders({}));
+        const newFilter = {};
+        setFilter(newFilter);
+        setData(getAllOrders(newFilter));
         setPage(FIRST_PAGE_NUMBER);
+        localStorage.setItem(FILTER_PARAMETER, JSON.stringify(newFilter));
+        localStorage.setItem(PAGE_PARAMETER, JSON.stringify(FIRST_PAGE_NUMBER));
     };
 
     const setFilterHandler = () => {
@@ -74,6 +83,8 @@ export default function OrderListView() {
         setFilter(newFilter);
         setData(getAllOrders(newFilter));
         setPage(FIRST_PAGE_NUMBER);
+        localStorage.setItem(FILTER_PARAMETER, JSON.stringify(newFilter));
+        localStorage.setItem(PAGE_PARAMETER, JSON.stringify(FIRST_PAGE_NUMBER));
     };
 
     return (
@@ -164,9 +175,12 @@ export default function OrderListView() {
                                         <TableCell align="center">{order.date}</TableCell>
                                         <TableCell align="center">{order.status}</TableCell>
                                         <TableCell align="center">{order.total}</TableCell>
-                                        <TableCell align="center">
-                                            {isHovered===order.id && (
-                                                <DeleteButton order={order} />
+                                        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+                                            {isHovered === order.id && (
+                                                <DeleteButton order={order} action={() => {
+                                                    setBinOrder(null);
+                                                    setData(getOrderData(filter));
+                                                }}  />
                                             )}
                                         </TableCell>
                                     </TableRow>

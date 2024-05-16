@@ -23,7 +23,7 @@ export default function DeleteButton({ order, action }) {
     const [alertOpen, setAlertOpen] = React.useState(false);
     const [alertTitle, setAlertTitle] = React.useState(formatMessage({ id: "order.delete.confirm.title" }));
     const [alertMessage, setAlertMessage] = React.useState("");
-    console.log(order);
+
     const orderDeleteHandler = () => {
         setAlertMessage(formatMessage({ id: "order.delete.confirm.question" }) + order.id + " ?");
         setAlertOpen(true);

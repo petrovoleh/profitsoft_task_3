@@ -94,3 +94,31 @@ export function getClientByOrderId(id) {
 function getOrderIndex(id) {
     return orders.findIndex(element => element.id === id);
 }
+
+
+export function getOrderData(filter) {
+    if (typeof filter === "undefined") {
+        return [...orders];
+    }
+    const orderList = orders.filter((order) => orderFits(order, filter));
+    return [...orderList];
+}
+function orderFits(order, filter) {
+    return (
+        orderStatusFits(order, filter.status) &&
+        orderDateFits(order, filter.dateStart, filter.dateEnd)
+    );
+}
+
+function orderStatusFits(order, status) {
+    if (!status) return true;
+    return order.status === status;
+}
+
+function orderDateFits(order, dateStart, dateEnd) {
+    const orderDate = new Date(order.date);
+    if (dateStart && orderDate < new Date(dateStart)) return false;
+    return !(dateEnd && orderDate > new Date(dateEnd));
+
+}
+
