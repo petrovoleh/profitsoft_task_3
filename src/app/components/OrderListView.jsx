@@ -15,22 +15,31 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import { Container, Grid, TextField, Fab, InputLabel, Select, MenuItem } from '@mui/material';
+import {Container, Grid, TextField, Fab, InputLabel, Select, MenuItem, Button, Portal} from '@mui/material';
 import { getAllOrders, getOrderData } from 'app/data/order';
 import { useNavigate } from 'react-router-dom';
 import { getClientById } from "../data/client";
 import DeleteButton from "./DeleteButton";
+import config from 'config';
+import * as pages from "../../constants/pages";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import {useIntl} from "react-intl"; // Імпортуємо config
 
 const PAGE_PARAMETER = "PAGE";
 const ROWS_PER_PAGE_PARAMETER = "ROWS_PER_PAGE";
 const FILTER_PARAMETER = "FILTER";
 const FIRST_PAGE_NUMBER = 0;
 const DEFAULT_PAGE_SIZE = 10;
+const timeout = 3000;
 
 export default function OrderListView() {
+    const { formatMessage } = useIntl();
     const savedPage = JSON.parse(localStorage.getItem(PAGE_PARAMETER)) || FIRST_PAGE_NUMBER;
     const savedRowsPerPage = JSON.parse(localStorage.getItem(ROWS_PER_PAGE_PARAMETER)) || DEFAULT_PAGE_SIZE;
     const savedFilter = JSON.parse(localStorage.getItem(FILTER_PARAMETER)) || {};
+    const [notificationOpen, setNotificationOpen] = React.useState(false);
+    const [notificationMessage, setNotificationMessage] = React.useState("");
 
     const [page, setPage] = React.useState(savedPage);
     const [rowsPerPage, setRowsPerPage] = React.useState(savedRowsPerPage);
@@ -52,6 +61,9 @@ export default function OrderListView() {
     const pageChangeHandler = (event, newPage) => {
         setPage(newPage);
         localStorage.setItem(PAGE_PARAMETER, JSON.stringify(newPage));
+    };
+    const handleNotificationClose = () => {
+        setNotificationOpen(false);
     };
 
     const rowsPerPageChangeHandler = (event) => {
@@ -85,6 +97,10 @@ export default function OrderListView() {
         setPage(FIRST_PAGE_NUMBER);
         localStorage.setItem(FILTER_PARAMETER, JSON.stringify(newFilter));
         localStorage.setItem(PAGE_PARAMETER, JSON.stringify(FIRST_PAGE_NUMBER));
+    };
+
+    const addOrderHandler = () => {
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}`);
     };
 
     return (
@@ -143,6 +159,15 @@ export default function OrderListView() {
                                 Clear Filter
                             </Fab>
                         </Grid>
+                        <Grid item xs={2}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={addOrderHandler}
+                            >
+                                Add Order
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Box>
             </Container>
@@ -178,6 +203,8 @@ export default function OrderListView() {
                                         <TableCell align="center" onClick={(e) => e.stopPropagation()}>
                                             {isHovered === order.id && (
                                                 <DeleteButton order={order} action={() => {
+                                                    setNotificationMessage(formatMessage({ id: "order.delete.confirm.success" }) + order.id);
+                                                    setNotificationOpen(true);
                                                     setBinOrder(null);
                                                     setData(getOrderData(filter));
                                                 }}  />
@@ -202,6 +229,26 @@ export default function OrderListView() {
                     </TableContainer>
                 </Grid>
             </Grid>
+            <Portal>
+                <Snackbar
+                    open={notificationOpen}
+                    autoHideDuration={timeout}
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left"
+                    }}
+                    sx={{ position: "absolute" }}
+                    onClose={handleNotificationClose}>
+                    <Alert
+                        onClose={handleNotificationClose}
+                        severity="success"
+                        variant="filled"
+                        sx={{ width: '100%' }}
+                    >
+                        {notificationMessage}
+                    </Alert>
+                </Snackbar>
+            </Portal>
         </Paper>
     );
 }

@@ -13,14 +13,12 @@ import { Portal } from '@mui/material';
 import { deleteOrderById } from 'app/data/order'; // Assuming there's a deleteOrderById function
 import { useIntl } from 'react-intl';
 
-const timeout = 3000;
+
 
 export default function DeleteButton({ order, action }) {
     const { formatMessage } = useIntl();
 
-    const [notificationOpen, setNotificationOpen] = React.useState(false);
-    const [notificationMessage, setNotificationMessage] = React.useState("");
-    const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertOpen, setAlertOpen] = React.useState(false);
     const [alertTitle, setAlertTitle] = React.useState(formatMessage({ id: "order.delete.confirm.title" }));
     const [alertMessage, setAlertMessage] = React.useState("");
 
@@ -33,9 +31,6 @@ export default function DeleteButton({ order, action }) {
         setAlertOpen(false);
     };
 
-    const handleNotificationClose = () => {
-        setNotificationOpen(false);
-    };
 
     const handleOK = (order) => {
         if (order === null) {
@@ -45,8 +40,6 @@ export default function DeleteButton({ order, action }) {
         const success = deleteOrderById(order.id);
         if (success) {
             setAlertOpen(false);
-            setNotificationMessage(formatMessage({ id: "order.delete.confirm.success" }) + order.id);
-            setNotificationOpen(true);
             action();
         } else {
             setAlertMessage(formatMessage({ id: "order.delete.confirm.fail.message" }) + order.id);
@@ -69,26 +62,7 @@ export default function DeleteButton({ order, action }) {
                     <Button onClick={handleCancel}>{formatMessage({ id: "button.cancel" })}</Button>
                 </DialogActions>
             </Dialog>
-            <Portal>
-                <Snackbar
-                    open={notificationOpen}
-                    autoHideDuration={timeout}
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left"
-                    }}
-                    sx={{ position: "absolute" }}
-                    onClose={handleNotificationClose}>
-                    <Alert
-                        onClose={handleNotificationClose}
-                        severity="success"
-                        variant="filled"
-                        sx={{ width: '100%' }}
-                    >
-                        {notificationMessage}
-                    </Alert>
-                </Snackbar>
-            </Portal>
+
         </>
     );
 }
