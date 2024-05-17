@@ -12,3 +12,7 @@ export const REQUEST_SIGN_UP = 'REQUEST_SIGN_UP';
 export const SUCCESS_SIGN_UP = 'SUCCESS_SIGN_UP';
 
 export const REQUEST_SIGN_OUT = 'REQUEST_SIGN_OUT';
+
+export const CREATE = "create";
+export const VIEW = "view";
+export const EDIT = "edit";

@@ -20,6 +20,7 @@ import { getAllOrders, getOrderData } from 'app/data/order';
 import { useNavigate } from 'react-router-dom';
 import { getClientById } from "../data/client";
 import DeleteButton from "./DeleteButton";
+import * as action from 'app/constants/actionTypes';
 import config from 'config';
 import * as pages from "../../constants/pages";
 import Snackbar from "@mui/material/Snackbar";
@@ -55,7 +56,7 @@ export default function OrderListView() {
     const [orderDateEnd, setOrderDateEnd] = React.useState(savedFilter.dateEnd || "");
 
     const orderSelectionHandler = (order) => {
-        navigate(`/orders/${order.id}`);
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order.id}`);
     }
 
     const pageChangeHandler = (event, newPage) => {
@@ -100,7 +101,7 @@ export default function OrderListView() {
     };
 
     const addOrderHandler = () => {
-        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}`);
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.CREATE}`);
     };
 
     return (

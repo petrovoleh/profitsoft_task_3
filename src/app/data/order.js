@@ -71,7 +71,11 @@ export function getOrderById(id) {
     return orders[index];
 }
 
-
+export function createOrder(order) {
+    const newOrder = { ...order, id: orders.length + 1 };
+    orders.push(newOrder);
+    return newOrder;
+}
 
 export function deleteOrderById(id) {
     const index = getOrderIndex(id);
@@ -120,5 +124,13 @@ function orderDateFits(order, dateStart, dateEnd) {
     if (dateStart && orderDate < new Date(dateStart)) return false;
     return !(dateEnd && orderDate > new Date(dateEnd));
 
+}
+export function updateOrderById(updatedOrder) {
+    const index = orders.findIndex(order => order.id === updatedOrder.id);
+    if (index !== -1) {
+        orders[index] = updatedOrder;
+        return true;
+    }
+    return false;
 }
 
