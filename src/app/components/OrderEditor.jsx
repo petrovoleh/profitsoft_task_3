@@ -5,6 +5,9 @@ import { getClientById } from '../data/client';
 import * as action from "../constants/actionTypes";
 import * as pages from "../../constants/pages";
 import config from "../../config";
+import IconButton from "@mui/material/IconButton";
+
+import EditIcon from '@mui/icons-material/Edit';
 
 const emptyOrder = {
     clientId: '',
@@ -108,10 +111,11 @@ function OrderEditor() {
     }
     return (
         <div>
-            <h2>{isCreateMode ? 'Create Order' : `Order Details for ${client?.name}`}</h2>
+
             {(isCreateMode || isEditMode) ? (
                 <form onSubmit={handleSubmit}>
                     <div>
+                        <h2>{isCreateMode ? 'Create Order' : `Edit order ${client?.name}`}</h2>
                         <label>Client ID:</label>
                         <input
                             type="number"
@@ -121,7 +125,7 @@ function OrderEditor() {
                             required
                             readOnly={!isEditMode && !isCreateMode}
                         />
-                        {errors.clientId && <div style={{ color: 'red' }}>{errors.clientId}</div>}
+                        {errors.clientId && <div style={{color: 'red'}}>{errors.clientId}</div>}
                     </div>
                     <div>
                         <label>Product:</label>
@@ -190,16 +194,25 @@ function OrderEditor() {
                     <button type="button" onClick={handleCancel}>Cancel</button>
                 </form>
             ) : (
+
                 <div>
+                    <div className="row"
+                         style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                        <h2>{`Order Details for ${client?.name}`}</h2>
+                        <IconButton
+                            onClick={() => navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.EDIT}/${order.id}`)}
+                            style={{marginLeft: "auto"}}>
+                            <EditIcon/>
+                        </IconButton>
+                    </div>
+
                     <p><strong>Client ID:</strong> {order.clientId}</p>
                     <p><strong>Product:</strong> {order.product}</p>
                     <p><strong>Quantity:</strong> {order.quantity}</p>
                     <p><strong>Total:</strong> ${order.total}</p>
                     <p><strong>Date:</strong> {order.date}</p>
                     <p><strong>Status:</strong> {order.status}</p>
-                    <button
-                        onClick={() => navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.EDIT}/${order.id}`)}>Edit
-                    </button>
+
                     <button onClick={goBackHandler}>Back</button>
                 </div>
             )}
