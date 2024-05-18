@@ -24,9 +24,9 @@ function OrderEditor() {
     const [order, setOrder] = useState(isCreateMode ? emptyOrder : null);
     const [client, setClient] = useState(null);
     const [form, setForm] = useState(emptyOrder);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
-
         if (!isCreateMode) {
             const orderData = getOrderById(Number(id));
             if (orderData) {
@@ -41,8 +41,6 @@ function OrderEditor() {
                 });
                 const clientData = getClientById(orderData.clientId);
                 setClient(clientData);
-
-
             }
         }
     }, [id, isCreateMode]);
@@ -52,8 +50,39 @@ function OrderEditor() {
         setForm({ ...form, [name]: value });
     };
 
+    const goBackHandler = () => {
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderListView}`);
+    };
+
+    const handleCancel = () => {
+        if (order?.id !== undefined) {
+            navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order?.id}`);
+        } else {
+            goBackHandler();
+        }
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!form.clientId) errors.clientId = 'Client ID is required';
+        if (!form.product) errors.product = 'Product is required';
+        if (!form.quantity) errors.quantity = 'Quantity is required';
+        if (isNaN(form.quantity) || form.quantity <= 0) errors.quantity = 'Quantity must be a positive number';
+        if (!form.total) errors.total = 'Total is required';
+        if (isNaN(form.total) || form.total < 0) errors.total = 'Total must be a non-negative number';
+        if (!form.date) errors.date = 'Date is required';
+        if (!form.status) errors.status = 'Status is required';
+        return errors;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
         const updatedOrder = {
             ...order,
             clientId: form.clientId,
@@ -84,7 +113,6 @@ function OrderEditor() {
                     <div>
                         <label>Client ID:</label>
                         <input
-
                             type="number"
                             name="clientId"
                             value={form.clientId}
@@ -92,6 +120,7 @@ function OrderEditor() {
                             required
                             readOnly={!isEditMode && !isCreateMode}
                         />
+                        {errors.clientId && <div style={{ color: 'red' }}>{errors.clientId}</div>}
                     </div>
                     <div>
                         <label>Product:</label>
@@ -103,6 +132,7 @@ function OrderEditor() {
                             required
                             readOnly={!isEditMode && !isCreateMode}
                         />
+                        {errors.product && <div style={{ color: 'red' }}>{errors.product}</div>}
                     </div>
                     <div>
                         <label>Quantity:</label>
@@ -114,6 +144,7 @@ function OrderEditor() {
                             required
                             readOnly={!isEditMode && !isCreateMode}
                         />
+                        {errors.quantity && <div style={{ color: 'red' }}>{errors.quantity}</div>}
                     </div>
                     <div>
                         <label>Total:</label>
@@ -125,6 +156,7 @@ function OrderEditor() {
                             required
                             readOnly={!isEditMode && !isCreateMode}
                         />
+                        {errors.total && <div style={{ color: 'red' }}>{errors.total}</div>}
                     </div>
                     <div>
                         <label>Date:</label>
@@ -136,6 +168,7 @@ function OrderEditor() {
                             required
                             readOnly={!isEditMode && !isCreateMode}
                         />
+                        {errors.date && <div style={{ color: 'red' }}>{errors.date}</div>}
                     </div>
                     <div>
                         <label>Status:</label>
@@ -150,8 +183,10 @@ function OrderEditor() {
                             <option value="COMPLETED">COMPLETED</option>
                             <option value="CANCELLED">CANCELLED</option>
                         </select>
+                        {errors.status && <div style={{ color: 'red' }}>{errors.status}</div>}
                     </div>
                     <button type="submit">Save</button>
+                    <button type="button" onClick={handleCancel}>Cancel</button>
                 </form>
             ) : (
                 <div>
@@ -161,7 +196,10 @@ function OrderEditor() {
                     <p><strong>Total:</strong> ${order.total}</p>
                     <p><strong>Date:</strong> {order.date}</p>
                     <p><strong>Status:</strong> {order.status}</p>
-                    <button onClick={() => navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.EDIT}/${order.id}`)}>Edit</button>
+                    <button
+                        onClick={() => navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.EDIT}/${order.id}`)}>Edit
+                    </button>
+                    <button onClick={goBackHandler}>Back</button>
                 </div>
             )}
         </div>
