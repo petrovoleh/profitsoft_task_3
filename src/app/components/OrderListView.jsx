@@ -15,7 +15,7 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import {Container, Grid, TextField, Fab, InputLabel, Select, MenuItem, Button, Portal} from '@mui/material';
+import { Container, Grid, TextField, Fab, InputLabel, Select, MenuItem, Button, Portal } from '@mui/material';
 import { getAllOrders, getOrderData } from 'app/data/order';
 import { useNavigate } from 'react-router-dom';
 import { getClientById } from "../data/client";
@@ -25,7 +25,7 @@ import config from 'config';
 import * as pages from "../../constants/pages";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import {useIntl} from "react-intl"; // Імпортуємо config
+import { useIntl } from "react-intl";
 
 const PAGE_PARAMETER = "PAGE";
 const ROWS_PER_PAGE_PARAMETER = "ROWS_PER_PAGE";
@@ -57,12 +57,13 @@ export default function OrderListView() {
 
     const orderSelectionHandler = (order) => {
         navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order.id}`);
-    }
+    };
 
     const pageChangeHandler = (event, newPage) => {
         setPage(newPage);
         localStorage.setItem(PAGE_PARAMETER, JSON.stringify(newPage));
     };
+
     const handleNotificationClose = () => {
         setNotificationOpen(false);
     };
@@ -110,22 +111,22 @@ export default function OrderListView() {
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }} alignItems="left">
                         <Grid item xs={2}>
-                            <InputLabel id="status">Order Status</InputLabel>
+                            <InputLabel id="status">{formatMessage({ id: "status.order" })}</InputLabel>
                             <Select
                                 id="status"
                                 value={orderStatus}
-                                label="Order Status"
+                                label={formatMessage({ id: "status.order" })}
                                 onChange={(event) => setOrderStatus(event.target.value)}
                                 fullWidth
                             >
-                                <MenuItem value=""><em>None</em></MenuItem>
-                                <MenuItem value="PENDING">Pending</MenuItem>
-                                <MenuItem value="COMPLETED">Completed</MenuItem>
-                                <MenuItem value="CANCELLED">Cancelled</MenuItem>
+                                <MenuItem value=""><em>{formatMessage({ id: "status.none" })}</em></MenuItem>
+                                <MenuItem value="PENDING">{formatMessage({ id: "status.pending" })}</MenuItem>
+                                <MenuItem value="COMPLETED">{formatMessage({ id: "status.completed" })}</MenuItem>
+                                <MenuItem value="CANCELLED">{formatMessage({ id: "status.cancelled" })}</MenuItem>
                             </Select>
                         </Grid>
                         <Grid item xs={2}>
-                            <InputLabel id="status">Order Date Start</InputLabel>
+                            <InputLabel id="status">{formatMessage({ id: "label.order.date.start" })}</InputLabel>
                             <TextField
                                 id="date-start"
                                 type="date"
@@ -138,7 +139,7 @@ export default function OrderListView() {
                             />
                         </Grid>
                         <Grid item xs={2}>
-                            <InputLabel id="status">Order Date End</InputLabel>
+                            <InputLabel id="status">{formatMessage({ id: "label.order.date.end" })}</InputLabel>
                             <TextField
                                 id="date-end"
                                 type="date"
@@ -152,17 +153,17 @@ export default function OrderListView() {
                         </Grid>
                         <Grid item xs={2}>
                             <Fab color="secondary" variant="extended" size="small" onClick={setFilterHandler}>
-                                Apply Filter
+                                {formatMessage({ id: "button.apply.filter" })}
                             </Fab>
                         </Grid>
                         <Grid item xs={2}>
                             <Fab color="secondary" variant="extended" size="small" onClick={clearFilterHandler}>
-                                Clear Filter
+                                {formatMessage({ id: "button.clear.filter" })}
                             </Fab>
                         </Grid>
                         <Grid item xs={2}>
                             <Fab color="primary" variant="extended" size="small" onClick={addOrderHandler}>
-                                Create Order
+                                {formatMessage({ id: "button.create.order" })}
                             </Fab>
                         </Grid>
                     </Grid>
@@ -174,11 +175,11 @@ export default function OrderListView() {
                         <Table sx={{ minWidth: 200 }} size="small" stickyHeader>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">Order ID</TableCell>
-                                    <TableCell align="center">Customer</TableCell>
-                                    <TableCell align="center">Date</TableCell>
-                                    <TableCell align="center">Status</TableCell>
-                                    <TableCell align="center">Total</TableCell>
+                                    <TableCell align="center">{formatMessage({ id: "label.order.id" })}</TableCell>
+                                    <TableCell align="center">{formatMessage({ id: "label.customer" })}</TableCell>
+                                    <TableCell align="center">{formatMessage({ id: "label.date" })}</TableCell>
+                                    <TableCell align="center">{formatMessage({ id: "label.status" })}</TableCell>
+                                    <TableCell align="center">{formatMessage({ id: "label.total" })}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -193,8 +194,7 @@ export default function OrderListView() {
                                         onMouseLeave={() => setIsHovered(-1)}
                                     >
                                         <TableCell align="center">{order.id}</TableCell>
-                                        <TableCell align="center">{getClientById(order.clientId).name}
-                                            {console.log("Client:",getClientById(order.clientId))}</TableCell>
+                                        <TableCell align="center">{getClientById(order.clientId).name}</TableCell>
                                         <TableCell align="center">{order.date}</TableCell>
                                         <TableCell align="center">{order.status}</TableCell>
                                         <TableCell align="center">{order.total}</TableCell>
@@ -219,7 +219,7 @@ export default function OrderListView() {
                             count={data.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
-                            labelRowsPerPage="Rows per page"
+                            labelRowsPerPage={formatMessage({ id: "label.rows.per.page" })}
                             onPageChange={pageChangeHandler}
                             onRowsPerPageChange={rowsPerPageChangeHandler}
                             ActionsComponent={TablePaginationActions}
@@ -290,3 +290,4 @@ TablePaginationActions.propTypes = {
     page: PropTypes.number.isRequired,
     rowsPerPage: PropTypes.number.isRequired,
 };
+

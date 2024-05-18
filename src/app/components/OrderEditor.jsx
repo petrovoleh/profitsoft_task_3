@@ -8,6 +8,7 @@ import config from "../../config";
 import IconButton from "@mui/material/IconButton";
 import "../css/OrderEditor.css"
 import EditIcon from '@mui/icons-material/Edit';
+import { useIntl } from 'react-intl';
 
 const emptyOrder = {
     clientId: '',
@@ -21,6 +22,7 @@ const emptyOrder = {
 function OrderEditor() {
     const { id, mode } = useParams();
     const navigate = useNavigate();
+    const { formatMessage } = useIntl();
 
     const isCreateMode = mode === action.CREATE;
     const isEditMode = mode === action.EDIT;
@@ -67,14 +69,14 @@ function OrderEditor() {
 
     const validateForm = () => {
         const errors = {};
-        if (!form.clientId) errors.clientId = 'Client ID is required';
-        if (!form.product) errors.product = 'Product is required';
-        if (!form.quantity) errors.quantity = 'Quantity is required';
-        if (isNaN(form.quantity) || form.quantity <= 0) errors.quantity = 'Quantity must be a positive number';
-        if (!form.total) errors.total = 'Total is required';
-        if (isNaN(form.total) || form.total < 0) errors.total = 'Total must be a non-negative number';
-        if (!form.date) errors.date = 'Date is required';
-        if (!form.status) errors.status = 'Status is required';
+        if (!form.clientId) errors.clientId = formatMessage({ id: "error.clientId.required" });
+        if (!form.product) errors.product = formatMessage({ id: "error.product.required" });
+        if (!form.quantity) errors.quantity = formatMessage({ id: "error.quantity.required" });
+        if (isNaN(form.quantity) || form.quantity <= 0) errors.quantity = formatMessage({ id: "error.quantity.positive" });
+        if (!form.total) errors.total = formatMessage({ id: "error.total.required" });
+        if (isNaN(form.total) || form.total < 0) errors.total = formatMessage({ id: "error.total.nonNegative" });
+        if (!form.date) errors.date = formatMessage({ id: "error.date.required" });
+        if (!form.status) errors.status = formatMessage({ id: "error.status.required" });
         return errors;
     };
 
@@ -113,9 +115,9 @@ function OrderEditor() {
         <div className="order-editor-container">
             {(isCreateMode || isEditMode) ? (
                 <form className="form-container" onSubmit={handleSubmit}>
-                    <h2>{isCreateMode ? 'Create Order' : `Edit order ${client?.name}`}</h2>
+                    <h2>{isCreateMode ? formatMessage({ id: "title.createOrder" }) : formatMessage({ id: "title.editOrder" }, { name: client?.name })}</h2>
                     <div className="form-group">
-                        <label className="form-label">Client ID:</label>
+                        <label className="form-label">{formatMessage({ id: "label.clientId" })}:</label>
                         <input
                             type="number"
                             name="clientId"
@@ -128,7 +130,7 @@ function OrderEditor() {
                         {errors.clientId && <div className="error-message">{errors.clientId}</div>}
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Product:</label>
+                        <label className="form-label">{formatMessage({ id: "label.product" })}:</label>
                         <input
                             type="text"
                             name="product"
@@ -141,7 +143,7 @@ function OrderEditor() {
                         {errors.product && <div className="error-message">{errors.product}</div>}
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Quantity:</label>
+                        <label className="form-label">{formatMessage({ id: "label.quantity" })}:</label>
                         <input
                             type="number"
                             name="quantity"
@@ -154,7 +156,7 @@ function OrderEditor() {
                         {errors.quantity && <div className="error-message">{errors.quantity}</div>}
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Total:</label>
+                        <label className="form-label">{formatMessage({ id: "label.total" })}:</label>
                         <input
                             type="number"
                             name="total"
@@ -167,7 +169,7 @@ function OrderEditor() {
                         {errors.total && <div className="error-message">{errors.total}</div>}
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Date:</label>
+                        <label className="form-label">{formatMessage({ id: "label.date" })}:</label>
                         <input
                             type="date"
                             name="date"
@@ -180,7 +182,7 @@ function OrderEditor() {
                         {errors.date && <div className="error-message">{errors.date}</div>}
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Status:</label>
+                        <label className="form-label">{formatMessage({ id: "label.status" })}:</label>
                         <select
                             name="status"
                             value={form.status}
@@ -189,19 +191,19 @@ function OrderEditor() {
                             readOnly={!isEditMode && !isCreateMode}
                             className="form-input"
                         >
-                            <option value="PENDING">PENDING</option>
-                            <option value="COMPLETED">COMPLETED</option>
-                            <option value="CANCELLED">CANCELLED</option>
+                            <option value="PENDING">{formatMessage({ id: "status.pending" })}</option>
+                            <option value="COMPLETED">{formatMessage({ id: "status.completed" })}</option>
+                            <option value="CANCELLED">{formatMessage({ id: "status.cancelled" })}</option>
                         </select>
                         {errors.status && <div className="error-message">{errors.status}</div>}
                     </div>
-                    <button type="submit" className="button button-primary">Save</button>
-                    <button type="button" onClick={handleCancel} className="button button-secondary">Cancel</button>
+                    <button type="submit" className="button button-primary">{formatMessage({ id: "button.save" })}</button>
+                    <button type="button" onClick={handleCancel} className="button button-secondary">{formatMessage({ id: "button.cancel" })}</button>
                 </form>
             ) : (
                 <div className="order-details-container">
                     <div className="row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                        <h2>{`Order Details for ${client?.name}`}</h2>
+                        <h2>{formatMessage({ id: "title.orderDetails" }, { name: client?.name })}</h2>
                         <IconButton
                             onClick={() => navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.EDIT}/${order.id}`)}
                             style={{ marginLeft: "auto" }}>
@@ -209,14 +211,14 @@ function OrderEditor() {
                         </IconButton>
                     </div>
 
-                    <p><strong>Client ID:</strong> {order.clientId}</p>
-                    <p><strong>Product:</strong> {order.product}</p>
-                    <p><strong>Quantity:</strong> {order.quantity}</p>
-                    <p><strong>Total:</strong> ${order.total}</p>
-                    <p><strong>Date:</strong> {order.date}</p>
-                    <p><strong>Status:</strong> {order.status}</p>
+                    <p><strong>{formatMessage({ id: "label.clientId" })}:</strong> {order.clientId}</p>
+                    <p><strong>{formatMessage({ id: "label.product" })}:</strong> {order.product}</p>
+                    <p><strong>{formatMessage({ id: "label.quantity" })}:</strong> {order.quantity}</p>
+                    <p><strong>{formatMessage({ id: "label.total" })}:</strong> ${order.total}</p>
+                    <p><strong>{formatMessage({ id: "label.date" })}:</strong> {order.date}</p>
+                    <p><strong>{formatMessage({ id: "label.status" })}:</strong> {order.status}</p>
 
-                    <button onClick={goBackHandler} className="back-button">Back</button>
+                    <button onClick={goBackHandler} className="back-button">{formatMessage({ id: "button.back" })}</button>
                 </div>
             )}
         </div>
