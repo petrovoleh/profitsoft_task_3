@@ -92,16 +92,15 @@ function OrderEditor() {
             date: form.date,
             status: form.status
         };
-
+        let newId;
         if (isCreateMode) {
-            setOrder(createOrder(updatedOrder));
+            newId = Number(createOrder(updatedOrder));
         } else {
-
             if(updateOrderById(updatedOrder))
                 setOrder(updatedOrder)
         }
 
-        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order.id }`);
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${newId || updatedOrder.id}`);
     };
 
     if (!isCreateMode && (!order || !client)) {

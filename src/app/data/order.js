@@ -89,7 +89,7 @@ export function createOrder(order) {
     const newOrder = { ...order, id: newId };
     orders.push(newOrder);
     saveOrdersToLocalStorage();
-    return { ...newOrder };
+    return newId;
 }
 
 export function deleteOrderById(id) {
