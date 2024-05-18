@@ -1,6 +1,6 @@
 import {getClientById} from "./client";
 
-const orders = [
+let ordersInit = [
     { id: 1, clientId: 1, product: "Laptop", quantity: 1, total: 1200, date: "2023-05-01", status: "COMPLETED" },
     { id: 2, clientId: 1, product: "Headphones", quantity: 2, total: 100, date: "2023-05-03", status: "PENDING" },
     { id: 3, clientId: 2, product: "Smartphone", quantity: 1, total: 800, date: "2023-05-02", status: "CANCELLED" },
@@ -43,9 +43,23 @@ const orders = [
     { id: 40, clientId: 20, product: "Bookshelf", quantity: 1, total: 60, date: "2023-06-09", status: "PENDING" },
 ];
 
+// Load data from local storage at the start
+const storedOrders = localStorage.getItem("orders");
+
+let orders = loadOrdersFromLocalStorage();
+
+function loadOrdersFromLocalStorage() {
+    const storedOrders = localStorage.getItem("orders");
+    if (!storedOrders) {
+
+        localStorage.setItem("orders", JSON.stringify(ordersInit));
+    }
+    return storedOrders ? JSON.parse(storedOrders) : [];
+}
+
 export function getAllOrders(filter = {}) {
     const { status, dateStart, dateEnd } = filter;
-    return orders.filter(order => {
+    const filteredOrders = orders.filter(order => {
         if (status && order.status !== status) {
             return false;
         }
@@ -57,6 +71,8 @@ export function getAllOrders(filter = {}) {
         }
         return true;
     });
+    console.log(filteredOrders);
+    return [...filteredOrders];
 }
 
 export function getOrdersByClient(id) {
@@ -64,49 +80,41 @@ export function getOrdersByClient(id) {
 }
 
 export function getOrderById(id) {
-    const index = getOrderIndex(id);
-    if (index === -1) {
-        return null;
-    }
-    return orders[index];
+    const order = orders.find(order => order.id === id);
+    return order ? { ...order } : null;
 }
 
 export function createOrder(order) {
-    const newOrder = { ...order, id: orders.length + 1 };
+    const newId = orders.length ? Math.max(...orders.map(o => o.id)) + 1 : 1;
+    const newOrder = { ...order, id: newId };
     orders.push(newOrder);
-    return newOrder;
+    saveOrdersToLocalStorage();
+    return { ...newOrder };
 }
 
 export function deleteOrderById(id) {
-    const index = getOrderIndex(id);
-    if (index === -1) {
-        return false;
+    const index = orders.findIndex(order => order.id === id);
+    if (index !== -1) {
+        orders.splice(index, 1);
+        saveOrdersToLocalStorage();
+        return true;
     }
-    orders.splice(index, 1);
-    return true;
+    return false;
 }
+
 export function getClientByOrderId(id) {
-    const index = getOrderIndex(id);
-    if (index === -1) {
-        return null;
-    }
-    const order = orders[index];
-    return getClientById(order.clientId) || null;
+    const order = orders.find(order => order.id === id);
+    return order ? getClientById(order.clientId) : null;
 }
-
-
-function getOrderIndex(id) {
-    return orders.findIndex(element => element.id === id);
-}
-
 
 export function getOrderData(filter) {
-    if (typeof filter === "undefined") {
+    if (!filter) {
         return [...orders];
     }
-    const orderList = orders.filter((order) => orderFits(order, filter));
-    return [...orderList];
+    const filteredOrders = orders.filter(order => orderFits(order, filter));
+    return [...filteredOrders];
 }
+
 function orderFits(order, filter) {
     return (
         orderStatusFits(order, filter.status) &&
@@ -115,22 +123,25 @@ function orderFits(order, filter) {
 }
 
 function orderStatusFits(order, status) {
-    if (!status) return true;
-    return order.status === status;
+    return !status || order.status === status;
 }
 
 function orderDateFits(order, dateStart, dateEnd) {
     const orderDate = new Date(order.date);
-    if (dateStart && orderDate < new Date(dateStart)) return false;
-    return !(dateEnd && orderDate > new Date(dateEnd));
-
+    return (!dateStart || orderDate >= new Date(dateStart)) &&
+        (!dateEnd || orderDate <= new Date(dateEnd));
 }
+
 export function updateOrderById(updatedOrder) {
     const index = orders.findIndex(order => order.id === updatedOrder.id);
     if (index !== -1) {
-        orders[index] = updatedOrder;
+        orders[index] = { ...updatedOrder };
+        saveOrdersToLocalStorage();
         return true;
     }
     return false;
 }
 
+function saveOrdersToLocalStorage() {
+    localStorage.setItem("orders", JSON.stringify(orders));
+}

@@ -85,21 +85,23 @@ function OrderEditor() {
 
         const updatedOrder = {
             ...order,
-            clientId: form.clientId,
+            clientId: Number(form.clientId),
             product: form.product,
-            quantity: form.quantity,
-            total: form.total,
+            quantity: Number(form.quantity),
+            total: Number(form.total),
             date: form.date,
             status: form.status
         };
 
         if (isCreateMode) {
-            await createOrder(updatedOrder);
+            setOrder(createOrder(updatedOrder));
         } else {
-            await updateOrderById(updatedOrder);
+
+            if(updateOrderById(updatedOrder))
+                setOrder(updatedOrder)
         }
 
-        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order?.id || updatedOrder.id}`);
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order.id }`);
     };
 
     if (!isCreateMode && (!order || !client)) {

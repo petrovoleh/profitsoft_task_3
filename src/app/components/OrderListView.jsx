@@ -197,7 +197,8 @@ export default function OrderListView() {
                                         onMouseLeave={() => setIsHovered(-1)}
                                     >
                                         <TableCell align="center">{order.id}</TableCell>
-                                        <TableCell align="center">{getClientById(order.clientId).name}</TableCell>
+                                        <TableCell align="center">{getClientById(order.clientId).name}
+                                            {console.log("Client:",getClientById(order.clientId))}</TableCell>
                                         <TableCell align="center">{order.date}</TableCell>
                                         <TableCell align="center">{order.status}</TableCell>
                                         <TableCell align="center">{order.total}</TableCell>
