@@ -25,6 +25,8 @@ import Header from '../components/Header';
 import IntlProvider from '../components/IntlProvider';
 import MissedPage from '../components/MissedPage';
 import SearchParamsConfigurator from '../components/SearchParamsConfigurator';
+import OrderListView from "../components/OrderListView";
+import OrderEditor from "../components/OrderEditor";
 
 function App() {
   const dispatch = useDispatch();
@@ -71,6 +73,18 @@ function App() {
                 )}
                 {!isFetchingUser && (
                   <Routes>
+                    <Route
+                        element={<OrderListView />}
+                        path={`${pageURLs[pages.orderListView]}`}
+                    />
+                    <Route
+                        element={<OrderEditor />}
+                        path={`${pageURLs[pages.orderEditor]}/:mode/:id`}
+                    />
+                    <Route
+                        element={<OrderEditor />}
+                        path={`${pageURLs[pages.orderEditor]}/:mode`}
+                    />
                     <Route
                       element={<DefaultPage />}
                       path={`${pageURLs[pages.defaultPage]}`}
