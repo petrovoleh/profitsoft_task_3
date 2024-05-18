@@ -6,7 +6,7 @@ import * as action from "../constants/actionTypes";
 import * as pages from "../../constants/pages";
 import config from "../../config";
 import IconButton from "@mui/material/IconButton";
-
+import "../css/OrderEditor.css"
 import EditIcon from '@mui/icons-material/Edit';
 
 const emptyOrder = {
@@ -110,13 +110,12 @@ function OrderEditor() {
         return <div>Loading...</div>;
     }
     return (
-        <div>
-
+        <div className="order-editor-container">
             {(isCreateMode || isEditMode) ? (
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <h2>{isCreateMode ? 'Create Order' : `Edit order ${client?.name}`}</h2>
-                        <label>Client ID:</label>
+                <form className="form-container" onSubmit={handleSubmit}>
+                    <h2>{isCreateMode ? 'Create Order' : `Edit order ${client?.name}`}</h2>
+                    <div className="form-group">
+                        <label className="form-label">Client ID:</label>
                         <input
                             type="number"
                             name="clientId"
@@ -124,11 +123,12 @@ function OrderEditor() {
                             onChange={handleChange}
                             required
                             readOnly={!isEditMode && !isCreateMode}
+                            className="form-input"
                         />
-                        {errors.clientId && <div style={{color: 'red'}}>{errors.clientId}</div>}
+                        {errors.clientId && <div className="error-message">{errors.clientId}</div>}
                     </div>
-                    <div>
-                        <label>Product:</label>
+                    <div className="form-group">
+                        <label className="form-label">Product:</label>
                         <input
                             type="text"
                             name="product"
@@ -136,11 +136,12 @@ function OrderEditor() {
                             onChange={handleChange}
                             required
                             readOnly={!isEditMode && !isCreateMode}
+                            className="form-input"
                         />
-                        {errors.product && <div style={{ color: 'red' }}>{errors.product}</div>}
+                        {errors.product && <div className="error-message">{errors.product}</div>}
                     </div>
-                    <div>
-                        <label>Quantity:</label>
+                    <div className="form-group">
+                        <label className="form-label">Quantity:</label>
                         <input
                             type="number"
                             name="quantity"
@@ -148,11 +149,12 @@ function OrderEditor() {
                             onChange={handleChange}
                             required
                             readOnly={!isEditMode && !isCreateMode}
+                            className="form-input"
                         />
-                        {errors.quantity && <div style={{ color: 'red' }}>{errors.quantity}</div>}
+                        {errors.quantity && <div className="error-message">{errors.quantity}</div>}
                     </div>
-                    <div>
-                        <label>Total:</label>
+                    <div className="form-group">
+                        <label className="form-label">Total:</label>
                         <input
                             type="number"
                             name="total"
@@ -160,11 +162,12 @@ function OrderEditor() {
                             onChange={handleChange}
                             required
                             readOnly={!isEditMode && !isCreateMode}
+                            className="form-input"
                         />
-                        {errors.total && <div style={{ color: 'red' }}>{errors.total}</div>}
+                        {errors.total && <div className="error-message">{errors.total}</div>}
                     </div>
-                    <div>
-                        <label>Date:</label>
+                    <div className="form-group">
+                        <label className="form-label">Date:</label>
                         <input
                             type="date"
                             name="date"
@@ -172,37 +175,37 @@ function OrderEditor() {
                             onChange={handleChange}
                             required
                             readOnly={!isEditMode && !isCreateMode}
+                            className="form-input"
                         />
-                        {errors.date && <div style={{ color: 'red' }}>{errors.date}</div>}
+                        {errors.date && <div className="error-message">{errors.date}</div>}
                     </div>
-                    <div>
-                        <label>Status:</label>
+                    <div className="form-group">
+                        <label className="form-label">Status:</label>
                         <select
                             name="status"
                             value={form.status}
                             onChange={handleChange}
                             required
                             readOnly={!isEditMode && !isCreateMode}
+                            className="form-input"
                         >
                             <option value="PENDING">PENDING</option>
                             <option value="COMPLETED">COMPLETED</option>
                             <option value="CANCELLED">CANCELLED</option>
                         </select>
-                        {errors.status && <div style={{ color: 'red' }}>{errors.status}</div>}
+                        {errors.status && <div className="error-message">{errors.status}</div>}
                     </div>
-                    <button type="submit">Save</button>
-                    <button type="button" onClick={handleCancel}>Cancel</button>
+                    <button type="submit" className="button button-primary">Save</button>
+                    <button type="button" onClick={handleCancel} className="button button-secondary">Cancel</button>
                 </form>
             ) : (
-
-                <div>
-                    <div className="row"
-                         style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <div className="order-details-container">
+                    <div className="row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                         <h2>{`Order Details for ${client?.name}`}</h2>
                         <IconButton
                             onClick={() => navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.EDIT}/${order.id}`)}
-                            style={{marginLeft: "auto"}}>
-                            <EditIcon/>
+                            style={{ marginLeft: "auto" }}>
+                            <EditIcon />
                         </IconButton>
                     </div>
 
@@ -213,7 +216,7 @@ function OrderEditor() {
                     <p><strong>Date:</strong> {order.date}</p>
                     <p><strong>Status:</strong> {order.status}</p>
 
-                    <button onClick={goBackHandler}>Back</button>
+                    <button onClick={goBackHandler} className="back-button">Back</button>
                 </div>
             )}
         </div>
@@ -221,3 +224,4 @@ function OrderEditor() {
 }
 
 export default OrderEditor;
+

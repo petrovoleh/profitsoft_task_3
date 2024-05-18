@@ -71,7 +71,6 @@ export function getAllOrders(filter = {}) {
         }
         return true;
     });
-    console.log(filteredOrders);
     return [...filteredOrders];
 }
 

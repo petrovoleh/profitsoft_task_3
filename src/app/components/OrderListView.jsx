@@ -125,9 +125,9 @@ export default function OrderListView() {
                             </Select>
                         </Grid>
                         <Grid item xs={2}>
+                            <InputLabel id="status">Order Date Start</InputLabel>
                             <TextField
                                 id="date-start"
-                                label="Order Date Start"
                                 type="date"
                                 value={orderDateStart}
                                 onChange={(event) => setOrderDateStart(event.target.value)}
@@ -138,9 +138,9 @@ export default function OrderListView() {
                             />
                         </Grid>
                         <Grid item xs={2}>
+                            <InputLabel id="status">Order Date End</InputLabel>
                             <TextField
                                 id="date-end"
-                                label="Order Date End"
                                 type="date"
                                 value={orderDateEnd}
                                 onChange={(event) => setOrderDateEnd(event.target.value)}
@@ -161,13 +161,9 @@ export default function OrderListView() {
                             </Fab>
                         </Grid>
                         <Grid item xs={2}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={addOrderHandler}
-                            >
-                                Add Order
-                            </Button>
+                            <Fab color="primary" variant="extended" size="small" onClick={addOrderHandler}>
+                                Create Order
+                            </Fab>
                         </Grid>
                     </Grid>
                 </Box>
