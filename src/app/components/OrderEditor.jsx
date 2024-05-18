@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getOrderById, updateOrderById, createOrder } from '../data/order.js';
-import { getClientById } from '../data/client.js';
+import { getOrderById, updateOrderById, createOrder } from '../data/order';
+import { getClientById } from '../data/client';
 import * as action from "../constants/actionTypes";
 import * as pages from "../../constants/pages";
 import config from "../../config";
@@ -16,7 +16,7 @@ const emptyOrder = {
 };
 
 function OrderEditor() {
-    const { orderId, mode } = useParams();
+    const { id, mode } = useParams();
     const navigate = useNavigate();
 
     const isCreateMode = mode === action.CREATE;
@@ -24,11 +24,11 @@ function OrderEditor() {
     const [order, setOrder] = useState(isCreateMode ? emptyOrder : null);
     const [client, setClient] = useState(null);
     const [form, setForm] = useState(emptyOrder);
-    const getInputProperties = () => (isEditMode || isCreateMode) ? { readOnly: false } : { readOnly: true };
 
     useEffect(() => {
+
         if (!isCreateMode) {
-            const orderData = getOrderById(Number(orderId));
+            const orderData = getOrderById(Number(id));
             if (orderData) {
                 setOrder(orderData);
                 setForm({
@@ -41,9 +41,11 @@ function OrderEditor() {
                 });
                 const clientData = getClientById(orderData.clientId);
                 setClient(clientData);
+
+
             }
         }
-    }, [orderId, isCreateMode]);
+    }, [id, isCreateMode]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -63,32 +65,32 @@ function OrderEditor() {
         };
 
         if (isCreateMode) {
-            createOrder(updatedOrder);
+            await createOrder(updatedOrder);
         } else {
-            updateOrderById(updatedOrder);
+            await updateOrderById(updatedOrder);
         }
 
-        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order.id}`);
+        navigate(`${config.UI_URL_PREFIX}/${pages.orderEditor}/${action.VIEW}/${order?.id || updatedOrder.id}`);
     };
 
     if (!isCreateMode && (!order || !client)) {
         return <div>Loading...</div>;
     }
-
     return (
         <div>
-            <h2>{isCreateMode ? 'Create Order' : `Order Details for ${client.name}`}</h2>
-            {isCreateMode || isEditMode ? (
+            <h2>{isCreateMode ? 'Create Order' : `Order Details for ${client?.name}`}</h2>
+            {(isCreateMode || isEditMode) ? (
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Client ID:</label>
                         <input
+
                             type="number"
                             name="clientId"
                             value={form.clientId}
                             onChange={handleChange}
                             required
-                            {...getInputProperties()} // Apply input properties here
+                            readOnly={!isEditMode && !isCreateMode}
                         />
                     </div>
                     <div>
@@ -99,7 +101,7 @@ function OrderEditor() {
                             value={form.product}
                             onChange={handleChange}
                             required
-                            {...getInputProperties()} // Apply input properties here
+                            readOnly={!isEditMode && !isCreateMode}
                         />
                     </div>
                     <div>
@@ -110,7 +112,7 @@ function OrderEditor() {
                             value={form.quantity}
                             onChange={handleChange}
                             required
-                            {...getInputProperties()} // Apply input properties here
+                            readOnly={!isEditMode && !isCreateMode}
                         />
                     </div>
                     <div>
@@ -121,7 +123,7 @@ function OrderEditor() {
                             value={form.total}
                             onChange={handleChange}
                             required
-                            {...getInputProperties()} // Apply input properties here
+                            readOnly={!isEditMode && !isCreateMode}
                         />
                     </div>
                     <div>
@@ -132,7 +134,7 @@ function OrderEditor() {
                             value={form.date}
                             onChange={handleChange}
                             required
-                            {...getInputProperties()} // Apply input properties here
+                            readOnly={!isEditMode && !isCreateMode}
                         />
                     </div>
                     <div>
@@ -142,7 +144,7 @@ function OrderEditor() {
                             value={form.status}
                             onChange={handleChange}
                             required
-                            {...getInputProperties()} // Apply input properties here
+                            readOnly={!isEditMode && !isCreateMode}
                         >
                             <option value="PENDING">PENDING</option>
                             <option value="COMPLETED">COMPLETED</option>
