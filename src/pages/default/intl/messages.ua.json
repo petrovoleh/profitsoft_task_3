@@ -1,3 +1,25 @@
 {
-  "title": "Це перша сторінка, яку побачать відвідувачі вашого сайту, розмістіть тут усю необхідну для них інформацію"
+  "title": "Це перша сторінка, яку бачать відвідувачі вашого сайту. Розмістіть всю необхідну інформацію тут",
+  "order.delete.confirm.title": "Підтвердження видалення замовлення",
+  "order.delete.confirm.question": "Ви дійсно хочете видалити замовлення ",
+  "order.delete.confirm.success": "Замовлення успішно видалено: ",
+  "order.delete.confirm.fail.message": "Не вдалося видалити замовлення: ",
+  "order.delete.confirm.fail.title": "Помилка видалення",
+  "button.ok": "ОК",
+  "button.cancel": "Скасувати",
+  "status.order": "Статус замовлення",
+  "status.none": "Немає",
+  "status.pending": "Очікується",
+  "status.completed": "Виконано",
+  "status.cancelled": "Скасовано",
+  "label.order.date.start": "Дата початку замовлення",
+  "label.order.date.end": "Дата завершення замовлення",
+  "button.apply.filter": "Застосувати фільтр",
+  "button.clear.filter": "Очистити фільтр",
+  "label.rows.per.page": "Рядків на сторінці",
+  "label.order.id": "ID замовлення",
+  "label.customer": "Клієнт",
+  "label.date": "Дата",
+  "label.status": "Статус",
+  "label.total": "Загальна сума"
 }
